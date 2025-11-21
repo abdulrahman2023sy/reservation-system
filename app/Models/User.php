@@ -45,4 +45,40 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    // Owner → Apartments he owns
+    public function apartments()
+    {
+        return $this->hasMany(Apartment::class, 'owner_id');
+    }
+
+    // Admin → apartments he reviewed
+    public function reviewedApartments() 
+    {
+        return $this->hasMany(Apartment::class, 'admin_id');
+    }
+
+    // User → Reservations made by this user
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
+    }
+
+     /* ==========================
+        Role Helpers
+    ===========================*/
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isOwner()
+    {
+        return $this->role === 'owner';
+    }
+
+    public function isUser()
+    {
+        return $this->role === 'user';
+    }
 }
