@@ -18,13 +18,7 @@ return new class extends Migration
 
             $table->string('title');
             $table->text('description')->nullable();
-            $table->string('address');
-            $table->string('city');
-
-            // Map coordinates
-            $table->decimal('latitude', 10, 7);
-            $table->decimal('longitude', 10, 7);
-
+            $table->integer('capacity');
             $table->decimal('price_per_night', 8, 2);
 
             // Approval workflow
@@ -37,12 +31,16 @@ return new class extends Migration
                 ->constrained('users')
                 ->nullOnDelete();
 
+            $table->foreignId('location_id')
+            ->nullable()
+            ->constrained('locations')
+            ->nullOnDelete();
+
             $table->text('review_comment')->nullable();
 
             $table->timestamps();
 
-            // Index for fast map queries
-            $table->index(['latitude', 'longitude']);
+            
         });
     }
 

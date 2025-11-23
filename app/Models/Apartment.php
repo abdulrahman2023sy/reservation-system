@@ -13,19 +13,14 @@ class Apartment extends Model
         'owner_id',
         'title',
         'description',
-        'address',
-        'city',
-        'latitude',
-        'longitude',
         'price_per_night',
         'status',
         'admin_id',
-        'review_comment'
+        'review_comment',
+        'capacity',
     ];
 
     protected $casts = [
-        'latitude' => 'float',
-        'longitude' => 'float',
         'price_per_night' => 'decimal:2',
     ];
 
@@ -53,4 +48,13 @@ class Apartment extends Model
         return $this->hasMany(Reservation::class);
     }
 
+    public function location()
+    {
+        return $this->belongsTo(Location::class);
+    }
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'apartment_category');
+    }
 }
