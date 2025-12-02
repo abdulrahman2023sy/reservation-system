@@ -6,23 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
-        Schema::create('apartment_images', function (Blueprint $table) {
+        Schema::create('roles', function (Blueprint $table) {
             $table->id();
-
-            $table->foreignId('apartment_id')
-                ->constrained('apartments')
-                ->cascadeOnDelete();
-
-            $table->string('image_path');
-
+            $table->string('name')->unique(); 
             $table->timestamps();
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
-        Schema::dropIfExists('apartment_images');
+        Schema::dropIfExists('roles');
     }
 };

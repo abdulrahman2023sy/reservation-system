@@ -4,13 +4,16 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -21,6 +24,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'phone',
+        'status',
     ];
 
     /**
@@ -32,6 +38,8 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+
 
     /**
      * Get the attributes that should be cast.
@@ -46,39 +54,29 @@ class User extends Authenticatable
         ];
     }
 
-    // Owner → Apartments he owns
-    public function apartments()
+
+    public function role()
     {
-        return $this->hasMany(Apartment::class, 'owner_id');
+        return $this->belongsTo(Role::class);
     }
 
-    // Admin → apartments he reviewed
-    public function reviewedApartments() 
+    public function balance(): HasOne
     {
-        return $this->hasMany(Apartment::class, 'admin_id');
+        return $this->hasOne(Balance::class);
     }
 
-    // User → Reservations made by this user
-    public function reservations()
+    public function providerProfile(): HasOne
     {
-        return $this->hasMany(Reservation::class);
+        return $this->hasOne(ServiceProviderProfile::class);
     }
 
-     /* ==========================
-        Role Helpers
-    ===========================*/
-    public function isAdmin()
+    public function services(): HasMany
     {
-        return $this->role === 'admin';
+        return $this->hasMany(Service::class, 'provider_id');
     }
 
-    public function isOwner()
+    public function bookings(): HasMany
     {
-        return $this->role === 'owner';
-    }
-
-    public function isUser()
-    {
-        return $this->role === 'user';
+        return $this->hasMany(Booking::class);
     }
 }
